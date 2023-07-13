@@ -30,16 +30,16 @@ class CourseProject(
             println()
         }
 
-        fun findByAuthor(author: String): List<CourseProject> {
+        fun findByAuthor(author: String?): List<CourseProject> {
             return projectsList.filter { it.author == author }
         }
 
-        fun findBySubject(subject: String): List<CourseProject> {
+        fun findBySubject(subject: String?): List<CourseProject> {
             return projectsList.filter { it.subject == subject }
         }
 
-        fun findByDate(deadline: String): List<CourseProject> {
-            var outputList = mutableListOf<CourseProject>()
+        fun findByDate(deadline: String?): List<CourseProject> {
+            val outputList = mutableListOf<CourseProject>()
             val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
             val parsedDeadline = sdf.parse(deadline)
 
@@ -54,6 +54,18 @@ class CourseProject(
             return outputList
         }
     }
+}
+
+fun printList(list: List<CourseProject>){
+    for (project in list) {
+        println("Номер: ${project.index}")
+        println("Дисциплина: ${project.subject}")
+        println("ФИО: ${project.author}")
+        println("Группа: ${project.group}")
+        println("Оценка: ${project.rating}")
+        println("Дата сдачи: ${project.date}\n")
+    }
+    println()
 }
 
 fun main() {
@@ -81,12 +93,48 @@ fun main() {
             print("Введите дату сдачи: ")
             val date = readlnOrNull()
 
-            val project: CourseProject = CourseProject(subject,
+            val project = CourseProject(subject,
                 author, group, rating, date)
             CourseProject.add(project)
 
             println("\nСейчас список курсовых работ выглядит так:\n")
             CourseProject.print()
+        }
+        if (num == 2) {
+            print("\nВведите ФИО автора: ")
+            val name = readlnOrNull()
+            val outputList = CourseProject.findByAuthor(name)
+            if (outputList.isNotEmpty()) {
+                println("Курсовые работы с автором \"$name\"\n")
+                printList(outputList)
+            }
+            else {
+                println("Такого автора нет!\n")
+            }
+        }
+        if (num == 3) {
+            print("\nВведите название дисциплины: ")
+            val subject = readlnOrNull()
+            val outputList = CourseProject.findBySubject(subject)
+            if (outputList.isNotEmpty()){
+                println("Курсовые работы по дисциплине \"$subject\"\n")
+                printList(outputList)
+            }
+            else {
+                println("Такой дисциплины нет!\n")
+            }
+        }
+        if (num == 4) {
+            print("\nВведите крайний срок сдачи работ: ")
+            val deadline = readlnOrNull()
+            val outputList = CourseProject.findByDate(deadline)
+            if (outputList.isNotEmpty()){
+                println("Курсовые работы, сданные после $deadline\n")
+                printList(outputList)
+            }
+            else {
+                println("Все работы сданы вовремя\n")
+            }
         }
     }
 }
